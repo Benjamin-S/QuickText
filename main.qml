@@ -3,12 +3,25 @@ import QtQuick.Window 2.2
 import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 
-
 ApplicationWindow {
     id: window
     title: "QuickText"
     visible: true
-    minimumHeight: contentItem.childrenRect.height + (menuBar._contentItem ? menuBar._contentItem.height : 0)
+    height: 300
+    width: 400
+    minimumHeight: 250
+
+    //minimumHeight: mainItem.implicitHeight + contentItem.childrenRect.height
+
+    Component.onCompleted: print(mainItem.width, mainItem.height, contentItem.childrenRect.height, window.minimumHeight)
+
+    function updateText(invoiceNumber)
+    {
+        if(invoiceNumber !== "")
+        {
+         area.text = "Hello. Please contact us on 00000000 and quote invoice number " + invoiceNumber;
+        }
+    }
 
     menuBar: MenuBar {
         Menu {
@@ -23,7 +36,8 @@ ApplicationWindow {
         }
     }
 
-    Item {
+    Rectangle {
+        id: mainItem
         anchors.margins: 10
         anchors.fill: parent
         GridLayout{
@@ -38,6 +52,7 @@ ApplicationWindow {
             TextField {
                 id: invoice_field
                 Layout.fillWidth: true
+                onFocusChanged: updateText(invoice_field.text)
             }
 
             Label {
@@ -50,28 +65,36 @@ ApplicationWindow {
                 Layout.fillWidth: true
             }
 
-            TextArea {
-                id: area
+            Rectangle {
+                border.color: "#bfbfbf"
+                border.width: 1
+                Layout.fillHeight: true
+                Layout.fillWidth: true
                 Layout.columnSpan: 2
+                TextArea {
+                    id: area
+                    anchors.margins: 5
+                    anchors.fill: parent
+                    wrapMode: Text.WordWrap
+                }
             }
 
             Item{
+                id: item1
+                Layout.alignment: Qt.AlignLeft | Qt.AlignBottom
                 Layout.columnSpan: 2
                 Layout.fillWidth: true
                 implicitHeight: send_btn.height
 
                 Button {
                     id: send_btn
-                    anchors.centerIn: parent
-                    anchors.bottom:
+
+//                    anchors.centerIn: parent
                     text: "Send SMS"
+                    anchors.right: parent.right
+                    anchors.rightMargin: 0
                 }
             }
         }
     }
 }
-
-/*##^## Designer {
-    D{i:0;autoSize:true;height:480;width:640}
-}
- ##^##*/
